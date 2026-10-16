@@ -1,0 +1,24 @@
+{
+  "direction": "LR",
+  "title": "模型训练与部署",
+  "nodes": [
+    {"id": "raw", "label": "原始语料", "shape": "cylinder"},
+    {"id": "clean", "label": "清洗 / 去重"},
+    {"id": "tok", "label": "分词 Tokenizer"},
+    {"id": "pre", "label": "预训练", "group": "训练"},
+    {"id": "sft", "label": "SFT 微调", "group": "训练"},
+    {"id": "rlhf", "label": "RLHF", "group": "训练"},
+    {"id": "eval", "label": "评测", "shape": "diamond"},
+    {"id": "serve", "label": "推理服务", "group": "部署"},
+    {"id": "gw", "label": "API 网关", "group": "部署"},
+    {"id": "app", "label": "应用", "shape": "stadium"}
+  ],
+  "edges": [
+    "raw -> clean -> tok -> pre",
+    {"from": "pre", "to": "sft"}, {"from": "sft", "to": "rlhf"},
+    {"from": "rlhf", "to": "eval"},
+    {"from": "eval", "to": "serve", "label": "通过"},
+    {"from": "eval", "to": "sft", "label": "不通过", "style": "dashed"},
+    {"from": "serve", "to": "gw"}, {"from": "gw", "to": "app", "bidirectional": true}
+  ]
+}

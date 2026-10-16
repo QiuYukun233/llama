@@ -1,0 +1,19 @@
+graph TD
+  title: 部署架构
+  user([用户]) --> lb[负载均衡]
+  subgraph cloud[云平台]
+    subgraph k8s[Kubernetes 集群]
+      lb --> ing[Ingress]
+      ing --> web1[Web Pod]
+      ing --> web2[Web Pod 2]
+      web1 --> api[API Pod]
+      web2 --> api
+    end
+    subgraph data[托管数据服务]
+      api --> pg[(PostgreSQL)]
+      api --> redis[(Redis)]
+    end
+    api --> oss[对象存储]
+  end
+  api --> pay[第三方支付]
+  pay -.->|回调| api

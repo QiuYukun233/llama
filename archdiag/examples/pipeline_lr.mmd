@@ -1,0 +1,15 @@
+flowchart LR
+  title: 数据处理流水线
+  src1[业务数据库] --> cdc[CDC 采集]
+  src2[日志文件] --> flume[Flume]
+  cdc --> kafka[(Kafka)]
+  flume --> kafka
+  kafka --> flink[Flink 实时计算]
+  kafka --> spark[Spark 离线计算]
+  flink --> ch[(ClickHouse)]
+  spark --> hive[(Hive 数仓)]
+  hive --> bi[BI 报表]
+  ch --> bi
+  ch --> alert{告警?}
+  alert -->|是| notify[通知服务]
+  alert -->|否| bi

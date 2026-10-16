@@ -1,0 +1,22 @@
+---
+title: 电商系统架构
+---
+graph TD
+  用户[用户浏览器] --> CDN
+  CDN -->|HTTPS| GW(API 网关)
+  subgraph 后端服务
+    GW --> order[订单服务]
+    GW --> user[用户服务]
+    GW --> goods[商品服务]
+    order --> MQ[(消息队列)]
+  end
+  subgraph 数据层
+    order --> DB[(MySQL)]
+    user --> DB
+    goods --> Cache{{Redis 缓存}}
+    goods --> DB
+  end
+  MQ --> worker[异步 Worker]
+  worker --> DB
+  监控[Prometheus 监控] -.-> order
+  监控 -.-> user

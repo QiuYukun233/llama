@@ -1,0 +1,55 @@
+{
+  "name": "draw_architecture_diagram",
+  "description": "画系统架构图/流程图。只描述有哪些框、分组和连线，程序自动排版并画好箭头，输出 PPTX/SVG。不要给坐标。",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "title": {"type": "string", "description": "图的标题，可选"},
+      "direction": {"type": "string", "enum": ["TB", "LR"], "description": "TB 上下布局（默认），LR 左右布局"},
+      "nodes": {
+        "type": "array",
+        "description": "所有的框",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string", "description": "唯一英文 ID，不含空格"},
+            "label": {"type": "string", "description": "框里显示的文字，可中文，尽量短"},
+            "shape": {"type": "string", "enum": ["rect", "round", "stadium", "cylinder", "diamond", "hexagon", "circle"],
+                      "description": "rect 矩形(默认)，round 圆角，stadium 胶囊/起止，cylinder 数据库，diamond 判断，hexagon 六边形，circle 圆"},
+            "group": {"type": "string", "description": "所属分组名（如“后端服务”），可选"}
+          },
+          "required": ["id", "label"]
+        }
+      },
+      "edges": {
+        "type": "array",
+        "description": "连线，方向 from → to",
+        "items": {
+          "type": "object",
+          "properties": {
+            "from": {"type": "string"},
+            "to": {"type": "string"},
+            "label": {"type": "string", "description": "线上的文字，可选"},
+            "style": {"type": "string", "enum": ["solid", "dashed", "thick"]},
+            "bidirectional": {"type": "boolean", "description": "双向箭头"}
+          },
+          "required": ["from", "to"]
+        }
+      },
+      "groups": {
+        "type": "array",
+        "description": "分组的额外信息（可选；节点上写 group 已足够）。用 parent 表示嵌套。",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string"},
+            "label": {"type": "string"},
+            "parent": {"type": "string"}
+          },
+          "required": ["id"]
+        }
+      }
+    },
+    "required": ["nodes", "edges"]
+  }
+}
